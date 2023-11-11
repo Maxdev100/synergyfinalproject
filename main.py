@@ -16,6 +16,9 @@ class MainWindow:
         # Инициализация всех виджетов
         self.init_widgets()
 
+        # Обновление таблицы с сотрудниками
+        self.update()
+
         # Цикл приложения
         self.app.mainloop()
 
@@ -32,7 +35,7 @@ class MainWindow:
         self.delete_btn_image = PhotoImage(file="./img/delete.png")
 
         # Кнопка добавления
-        add_btn = Button(self.toolbar, image=self.add_btn_image, command=lambda: AddWindow(db))
+        add_btn = Button(self.toolbar, image=self.add_btn_image, command=lambda: AddWindow(db, self))
         add_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Кнопка изменения
@@ -44,7 +47,7 @@ class MainWindow:
         delete_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Кнопка удаления
-        update_btn = Button(self.toolbar, image=self.update_btn_image)
+        update_btn = Button(self.toolbar, image=self.update_btn_image, command=self.update)
         update_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Кнопка поиска
@@ -66,6 +69,13 @@ class MainWindow:
 
         # Упаковка таблицы
         self.treeview.pack(fill=BOTH, expand=True)
+
+    # Обновляет список пользователей
+    def update(self):
+        data = db.select_all()
+        self.treeview.delete(*self.treeview.get_children())
+        for employee in data:
+            self.treeview.insert("", END, values=employee)
 
     # Выход из программы
     def exit(self):
