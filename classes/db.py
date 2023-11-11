@@ -29,7 +29,17 @@ class DB:
 
         self.connection.commit()
 
-    def select_all(self):
-        data = self.cursor.execute('''SELECT name, phone, email, salary FROM Employees''').fetchall()
+    def select_all(self, name=None):
+        data = None
+        if name is None:
+            data = self.cursor.execute('''SELECT name, phone, email, salary FROM Employees''').fetchall()
+        else:
+            data = self.cursor.execute(f'''SELECT name, phone, email, salary FROM Employees WHERE name="{name}"''').fetchall()
         self.connection.commit()
         return data
+
+    # Редактирование данных сотрудника по имени
+    def edit(self, name, phone, email, salary):
+        self.cursor.execute(f'''UPDATE Employees SET phone=?, email=?, salary=? WHERE name="{name}"''',
+                            (phone, email, salary))
+        self.connection.commit()

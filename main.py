@@ -1,6 +1,7 @@
 from tkinter import ttk
 from classes.db import *
 from classes.add_window import *
+from classes.edit_window import *
 
 
 class MainWindow:
@@ -39,7 +40,7 @@ class MainWindow:
         add_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Кнопка изменения
-        edit_btn = Button(self.toolbar, image=self.edit_btn_image)
+        edit_btn = Button(self.toolbar, image=self.edit_btn_image, command=lambda: EditWindow(db, self))
         edit_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Кнопка обновления
@@ -55,12 +56,12 @@ class MainWindow:
         search_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Таблица
-        columns = ("#1", "#2", "#3", "#4")
+        columns = ("name", "phone", "email", "salary")
         self.treeview = ttk.Treeview(self.app, show="headings", columns=columns)
-        self.treeview.heading("#1", text="ФИО")
-        self.treeview.heading("#2", text="Номер телефона")
-        self.treeview.heading("#3", text="Электронная почта")
-        self.treeview.heading("#4", text="Заработная плата")
+        self.treeview.heading("name", text="ФИО")
+        self.treeview.heading("phone", text="Номер телефона")
+        self.treeview.heading("email", text="Электронная почта")
+        self.treeview.heading("salary", text="Заработная плата")
 
         # Скроллбар таблицы
         self.treeview_yscroll = Scrollbar(self.app, orient=VERTICAL, command=self.treeview.yview)

@@ -12,7 +12,7 @@ class AddWindow:
         # Инициализация окна
         self.add_window = Toplevel()
         self.add_window.geometry("470x170")
-        self.add_window.title("Добавить пользователя")
+        self.add_window.title("Добавить сотрудника")
         self.add_window.resizable(False, False)
         self.add_window.focus()
 
