@@ -2,6 +2,7 @@ from tkinter import ttk
 from classes.db import *
 from classes.add_window import *
 from classes.edit_window import *
+from classes.find_window import *
 
 
 class MainWindow:
@@ -23,6 +24,7 @@ class MainWindow:
         # Цикл приложения
         self.app.mainloop()
 
+    # Инициализация виджетов
     def init_widgets(self):
         # Тулбар с кнопками
         self.toolbar = Frame(self.app)
@@ -44,7 +46,7 @@ class MainWindow:
         edit_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Кнопка обновления
-        delete_btn = Button(self.toolbar, image=self.delete_btn_image)
+        delete_btn = Button(self.toolbar, image=self.delete_btn_image, command=self.delete)
         delete_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Кнопка удаления
@@ -52,7 +54,7 @@ class MainWindow:
         update_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Кнопка поиска
-        search_btn = Button(self.toolbar, image=self.search_btn_image)
+        search_btn = Button(self.toolbar, image=self.search_btn_image, command=lambda: SearchWindow(db, self))
         search_btn.pack(side=LEFT, pady=2, padx=17)
 
         # Таблица
@@ -71,9 +73,23 @@ class MainWindow:
         # Упаковка таблицы
         self.treeview.pack(fill=BOTH, expand=True)
 
+    # Удаляет выбранных сотрудников
+    def delete(self):
+        # Получение выбранных сотрудников
+        selected = self.treeview.selection()
+
+        # Перебор и удаление каждого сотрудника (получение данных по ключу из словаря и
+        # извлечение нулевого элемента (имени)
+        for user in selected:
+            name = self.treeview.item(user)["values"][0]
+            db.delete_by_name(name)
+        self.update()
+
     # Обновляет список пользователей
     def update(self):
         data = db.select_all()
+
+        # Очистка таблицы и добавление в нее записей из БД
         self.treeview.delete(*self.treeview.get_children())
         for employee in data:
             self.treeview.insert("", END, values=employee)

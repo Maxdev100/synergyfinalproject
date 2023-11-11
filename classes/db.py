@@ -8,7 +8,6 @@ class DB:
         # INIT
         self.connection = sqlite3.connect("database.db")
         self.cursor = self.connection.cursor()
-
         self.create_table()
 
     def close_connection(self):
@@ -19,22 +18,31 @@ class DB:
         email TEXT, salary INT)''')
         self.connection.commit()
 
+    # Добавление сотрудника
     def insert_employee(self, name, phone, email, salary):
         try:
             self.cursor.execute('''INSERT INTO Employees (name, phone, email, salary) VALUES (?, ?, ?, ?)''',
                                 (name, phone, email, salary))
+            self.connection.commit()
+            return True
         except:
             messagebox.showerror(title="Ошибка добавления",
                                  message=f"Не удалось добавить сотрудника {name}. Возможно, сотрудник с таким именем уже существует.")
+            return False
 
-        self.connection.commit()
-
-    def select_all(self, name=None):
+    # Name - имя пользователя для поиска, soft=False - строгое соответствие имени
+    def select_all(self, name=None, soft=False):
         data = None
         if name is None:
             data = self.cursor.execute('''SELECT name, phone, email, salary FROM Employees''').fetchall()
         else:
-            data = self.cursor.execute(f'''SELECT name, phone, email, salary FROM Employees WHERE name="{name}"''').fetchall()
+            if not soft:
+                data = self.cursor.execute(
+                    f'''SELECT name, phone, email, salary FROM Employees WHERE name="{name}"''').fetchall()
+            elif soft:
+                data = self.cursor.execute(
+                    f'''SELECT name, phone, email, salary FROM Employees WHERE name LIKE "%{name}%"''').fetchall()
+
         self.connection.commit()
         return data
 
@@ -42,4 +50,8 @@ class DB:
     def edit(self, name, phone, email, salary):
         self.cursor.execute(f'''UPDATE Employees SET phone=?, email=?, salary=? WHERE name="{name}"''',
                             (phone, email, salary))
+        self.connection.commit()
+
+    def delete_by_name(self, name):
+        self.cursor.execute(f'''DELETE FROM Employees WHERE name=?''', (name,))
         self.connection.commit()

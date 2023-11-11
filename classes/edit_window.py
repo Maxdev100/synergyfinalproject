@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 
 class EditWindow:
-    # Конструктор класса принимает объект БД
+    # Конструктор класса принимает объект БД и объект главного окна
     def __init__(self, db_ex, mainwindow_ex):
         self.db_ex = db_ex
         self.mainwindow_ex = mainwindow_ex
@@ -39,6 +39,7 @@ class EditWindow:
         Button(self.edit_window, font=self.font, text="Применить изменения", activebackground="#f5f5dc",
                command=self.apply_changes).pack(side=BOTTOM, fill=X)
 
+        # Заполнение полей ввода
         self.fill_fields()
 
     # Заполнение полей ввода данными. Поле "ФИО" заблокировано

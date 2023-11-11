@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 
 class AddWindow:
-    # Конструктор класса принимает объект БД
+    # Конструктор класса принимает объект БД и объект главного окна
     def __init__(self, db_ex, mainwindow_ex):
         self.db_ex = db_ex
         self.mainwindow_ex = mainwindow_ex
@@ -34,10 +34,14 @@ class AddWindow:
 
         Button(self.add_window, font=self.font, text="Добавить", activebackground="#f5f5dc", command=self.add_user).pack(side=BOTTOM, fill=X)
 
+    # Добавление сотрудника в БД
     def add_user(self):
         if len(self.name.get()) == 0 or len(self.phone.get()) == 0 or len(self.email.get()) == 0 or len(self.salary.get()) == 0:
             messagebox.showerror(title="Ошибка добавления", message="Не все поля заполнены!")
             self.add_window.focus()
         else:
-            self.db_ex.insert_employee(name=self.name.get(), phone=self.phone.get(), email=self.email.get(), salary=self.salary.get())
+            # Если возникла ошибка добавления, перевести фокус на это окно после закрытия окна ошибки
+            if not self.db_ex.insert_employee(name=self.name.get(), phone=self.phone.get(),
+                                              email=self.email.get(), salary=self.salary.get()):
+                self.add_window.focus()
             self.mainwindow_ex.update()
